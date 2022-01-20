@@ -1,0 +1,7 @@
+#add(GlideDateTime)
+
+var gdt = new GlideDateTime("2011-08-31 08:00:00");
+var gtime1 = new GlideTime();
+gtime1.setValue("00:00:20");
+gdt.add(gtime1);
+gs.print(gdt.toString());
