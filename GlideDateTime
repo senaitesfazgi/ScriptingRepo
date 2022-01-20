@@ -1,3 +1,5 @@
+https://developer.servicenow.com/dev.do#!/reference/api/rome/server_legacy/c_GlideDateTimeAPI
+
 #add(GlideDateTime)
 
 var gdt = new GlideDateTime("2011-08-31 08:00:00");
