@@ -1,0 +1,9 @@
+function onLoad(){
+
+  if(!g_user.hasRoleExactly('itil_admin')){
+    g_form.removeOption('pack_type', 'cym3');
+    g_form.removeOption('pack_type', 'cym6');
+  
+  }
+
+}
