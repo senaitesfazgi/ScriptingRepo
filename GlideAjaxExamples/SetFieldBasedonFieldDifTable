@@ -1,0 +1,60 @@
+// Client script making Ajax call to script include
+// Link to Client Script in instance is: https://dev106993.service-now.com/nav_to.do?uri=%2Fsys_script_client.do%3Fsys_id%3D2d40cbfc1b950110af618623604bcb9c%26sysparm_view%3D%26sysparm_domain%3Dnull%26sysparm_domain_scope%3Dnull%26sysparm_record_row%3D1%26sysparm_record_rows%3D1840%26sysparm_record_list%3Dsys_class_name%253dsys_script_client%255eORDERBYDESCsys_updated_on
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || newValue === '') {
+        return;
+    }
+
+    var service = g_form.getValue('business_service');
+
+    //Call script include
+    var ga = new GlideAjax('global.GetBusinessCriticality'); //Scriptinclude
+    ga.addParam('sysparm_name', 'getServiceDetails'); //Method
+    ga.addParam('serviceId', service); //Parameters
+    ga.getXMLAnswer(getResponse);
+
+    function getResponse(response) {
+        //console.log(response);
+        var res = JSON.parse(response);
+        //console.log(res);
+		//g_form.addInfoMessage(res.busines_criticality);
+        if (res.busines_criticality != '4 - not critical') {
+            g_form.setValue('u_update_disaster_recovery', true);
+        } else {
+            g_form.setValue('u_update_disaster_recovery', false);
+        }
+    }
+
+}
+
+
+// The Script include fetching the data from service table
+//Link to script include in instance is: https://dev106993.service-now.com/nav_to.do?uri=%2Fsys_script_include.do%3Fsys_id%3Dadf1c7701bd50110af618623604bcb32%26sysparm_view%3D%26sysparm_domain%3Dnull%26sysparm_domain_scope%3Dnull
+
+
+var GetBusinessCriticality = Class.create();
+GetBusinessCriticality.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+
+    getServiceDetails: function() {
+        //gs.addInfoMessage('script include triggered');
+
+        var serviceId = this.getParameter('serviceId');
+        //gs.addInfoMessage('Service sysID--' + serviceId);
+		obj = {};
+        //comment added to prevent empty block statement alert.
+        //gs.addInfoMessage('I can reach here');
+        var grBservice = new GlideRecord('cmdb_ci_service');
+       // gs.addInfoMessage('Can I reach here? Yes you can');
+        try {
+            grBservice.get(serviceId);
+            //gs.addInfoMessage(grBservice.get(serviceId));
+			obj.name = grBservice.getValue('name');
+			obj.busines_criticality = grBservice.getValue('busines_criticality');
+			//gs.addInfoMessage(obj+JSON.stringify(obj));
+			return JSON.stringify(obj);
+            //comment added to prevent empty block statement alert.
+        } catch (err) {
+            gs.addErrorMessage("A runtime error occurred:" + err);
+        }
+
+    },
