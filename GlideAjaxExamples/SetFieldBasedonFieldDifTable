@@ -58,3 +58,5 @@ GetBusinessCriticality.prototype = Object.extendsObject(AbstractAjaxProcessor, {
         }
 
     },
+
+// Source: https://community.servicenow.com/community?id=community_article&sys_id=25975379dbe0f8d0190dfb2439961937
