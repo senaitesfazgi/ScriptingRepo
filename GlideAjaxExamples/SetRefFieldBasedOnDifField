@@ -1,0 +1,81 @@
+// Client script Set Assign Group to CI Assign Group making Ajax call to Script Include GetAssignmentGroup
+
+// --------------------------- Client script -------------------------------------
+// Link to ServiceNow 
+https://dev106993.service-now.com/nav_to.do?uri=%2Fsys_script_client.do%3Fsys_id%3Df79cafcd1b594110af618623604bcb71%26sysparm_view%3D%26sysparm_domain%3Dnull%26sysparm_domain_scope%3Dnull%26sysparm_record_row%3D1%26sysparm_record_rows%3D1841%26sysparm_record_list%3Dsys_class_name%253dsys_script_client%255eORDERBYDESCsys_updated_on
+
+
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || newValue === '') {
+        return;
+    }
+
+    var cmdb_ci = g_form.getValue('cmdb_ci');
+
+    //Call script include
+    var ga = new GlideAjax('global.GetAssignmentGroup'); //Scriptinclude
+    ga.addParam('sysparm_name', 'getAssignmentGDetails'); //Method
+    ga.addParam('ci_Id', cmdb_ci); //Parameters
+    ga.getXMLAnswer(getResponse);
+
+    function getResponse(response) {
+        //console.log(response);
+
+        //console.log(res);
+        try {
+
+            var res = JSON.parse(response);
+            //comment added to prevent empty block statement alert.
+            var assignmentGroup = res.assignment_group;
+			
+            if (assignmentGroup != null) {
+                //g_form.addInfoMessage('AssignmentGroup-' + assignmentGroup);
+                g_form.setValue('assignment_group', assignmentGroup);
+
+            }
+        } catch (err) {
+            g_form.addErrorMessage("A runtime error occurred:" + err);
+        }
+
+    }
+
+}
+
+//---------------------------------Script Include--------------------------------------------
+// Link to servicenow: 
+https://dev106993.service-now.com/nav_to.do?uri=%2Fsys_script_include.do%3Fsys_id%3D7a2aaf8d1b594110af618623604bcb83%26sysparm_view%3D%26sysparm_domain%3Dnull%26sysparm_domain_scope%3Dnull%26sysparm_record_row%3D1%26sysparm_record_rows%3D2251%26sysparm_record_list%3Dname%253e%253dGetBusinessCriticality%255eORDERBYname
+
+var GetAssignmentGroup = Class.create();
+GetAssignmentGroup.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+
+    getAssignmentGDetails: function() {
+        //gs.addInfoMessage('script include triggered');
+
+        var ci_Id = this.getParameter('ci_Id');
+       // gs.addInfoMessage('cmdb_ci sysID--' + ci_Id);
+        obj = {};
+        //comment added to prevent empty block statement alert.
+
+        try {
+
+            var grcmdb_ci = new GlideRecord('cmdb_ci');
+            grcmdb_ci.get(ci_Id);
+			
+            //gs.addInfoMessage(grcmdb_ci.get(ci_Id));
+            obj.name = grcmdb_ci.getValue('name');
+			
+            //Pass the sys_id of the assignment_group reference field
+            obj.assignment_group = grcmdb_ci.getValue('assignment_group');
+            //gs.addInfoMessage(obj + JSON.stringify(obj));
+
+            return JSON.stringify(obj);
+            //comment added to prevent empty block statement alert.
+
+        } catch (err) {
+            gs.addErrorMessage("A runtime error occurred:" + err);
+        }
+
+    },
+
+    type: 'GetAssignmentGroup'
+});
