@@ -1,0 +1,16 @@
+// Do this in the business rule to create a g_sratchpad object
+// https://dev106993.service-now.com/nav_to.do?uri=%2Fsys_script.do%3Fsys_id%3D0696ebb00b632200d3fced3ab4673a37%26sysparm_record_target%3Dsys_script%26sysparm_record_row%3D3%26sysparm_record_rows%3D1696%26sysparm_record_list%3Dname%253E%253Dscratchpad%255EORDERBYDESCsys_updated_on
+
+setScratchpadValuesForRelatedLists();
+
+function setScratchpadValuesForRelatedLists(){
+	g_scratchpad.projectTable = SNC.PPMConfig.getProjectTable(current.sys_class_name);
+}
+
+//Use this onLoad client script to call the g_scratchpad object returned by the business rule
+
+function onLoad() {
+   //Type appropriate comment here, and begin script below
+   g_form.setValue('location', g_scratchpad.callerLocation);
+	g_form.addInfoMessage(g_scratchpad.callerLocation.getDisplayValue('location'));
+}
