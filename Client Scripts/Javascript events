@@ -1,0 +1,17 @@
+//Create this client script for the new field 'u_cd_reference' in the incident form
+
+function onLoad() {
+    //Type appropriate comment here, and begin script below
+    var cdref = g_form.getControl('u_cd_reference');
+     cdref.onfocus = cdRefonFocus;
+     cdref.onblur = cdRefonBlur;
+
+     function cdRefonFocus(){
+         g_form.hideAllFieldMsgs();
+         g_form.showFieldMsg('u_cd_reference', "Format must be: CD(L)-0000(L)", 'info');
+     }
+
+     function cdRefonBlur(){
+         g_form.hideAllFieldMsgs();
+     }
+ }
