@@ -1,0 +1,23 @@
+// Client Script here
+//https://dev106993.service-now.com/nav_to.do?uri=%2Fsys_script_client.do%3Fsys_id%3Dfc8948921bd50110af618623604bcb05%26sysparm_record_target%3Dsys_script_client%26sysparm_record_row%3D1%26sysparm_record_rows%3D1845%26sysparm_record_list%3Dsys_class_name%253Dsys_script_client%255EORDERBYDESCsys_updated_on
+//On submit client script add the following script
+
+function onSubmit() {
+    //Type appropriate comment here, and begin script below
+    g_form.hideAllFieldMsgs();
+    g_form.clearMessages();
+    var cdref = g_form.getValue('u_cd_reference');
+    var pattern = /^[C][D][A-Z]-\d{4}[A-Z]$/;
+    var result = pattern.test(cdref);
+
+    if (result || cdref == null) {
+        return true;
+    } else {
+        g_form.addErrorMessage("Invalid Update - check values and re-submit");
+        g_form.showFieldMsg('u_cd_reference', "Incorrect data entered. Format must be CD(L)-1234(L)", 'error');
+		return false;
+    }
+
+
+}
+
